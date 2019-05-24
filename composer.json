@@ -1,0 +1,34 @@
+{
+    "name": "fndmiranda/address",
+    "description": "Search address by postcode in multiple api`s",
+    "keywords": [
+      "laravel",
+      "address",
+      "postcode"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fernando Miranda",
+            "email": "fndmiranda@gmail.com"
+        }
+    ],
+    "require": {
+      "php": ">=7.0.0",
+      "laravel/framework": "^5.5"
+    },
+    "autoload": {
+      "psr-4": {
+        "Fndmiranda\\Address\\": "src/"
+      }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "Fndmiranda\\Address\\AddressServiceProvider"
+        ]
+      }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
