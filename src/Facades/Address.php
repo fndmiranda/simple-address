@@ -5,7 +5,7 @@ namespace Fndmiranda\Address\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static array get(string $postcode, bool $geolocation = false)
+ * @method static array search(string|int $postcode, bool $geolocation = false)
  *
  * @see \Fndmiranda\Address\Address
  */

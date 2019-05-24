@@ -14,6 +14,8 @@ class AddressServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(__DIR__.'/../config/address.php', 'address');
+
         App::bind('address', Address::class);
     }
 }
