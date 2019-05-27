@@ -5,7 +5,7 @@ namespace Fndmiranda\Address\Adapters;
 use Fndmiranda\Contracts\AdapterContract;
 use GuzzleHttp\Psr7\Request;
 
-class ViaCepAdapter implements AdapterContract
+class PostmonAdapter implements AdapterContract
 {
     /**
      * Search external address by postcode.
@@ -17,14 +17,14 @@ class ViaCepAdapter implements AdapterContract
     public function search($postcode)
     {
         $client = new \GuzzleHttp\Client();
-        $request = new Request('GET', 'https://viacep.com.br/ws/'.$postcode.'/json/');
+        $request = new Request('GET', 'https://api.postmon.com.br/v1/cep/'.$postcode.'?format=json');
         $response = $client->send($request);
 
-        $data = json_decode((string) $response->getBody(), true);
-
-        if (!empty($data['erro'])) {
+        if ($response->getStatusCode() != 200) {
             return false;
         }
+
+        $data = json_decode((string) $response->getBody(), true);
 
         return $this->prepare($data);
     }
@@ -41,8 +41,8 @@ class ViaCepAdapter implements AdapterContract
             'postcode' => $data['cep'],
             'address' => $data['logradouro'],
             'neighborhood' => $data['bairro'],
-            'city' => $data['localidade'],
-            'state' => $data['uf'],
+            'city' => $data['cidade'],
+            'state' => $data['estado'],
         ];
     }
 }

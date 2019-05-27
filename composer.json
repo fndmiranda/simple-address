@@ -1,10 +1,12 @@
 {
-    "name": "fndmiranda/address",
-    "description": "Search address by postcode in multiple api`s",
+    "name": "fndmiranda/simple-address",
+    "description": "Search address by postcode in multiple Api's and optionally get geocoding in Google Maps with the results.",
     "keywords": [
       "laravel",
       "address",
-      "postcode"
+      "postcode",
+      "google maps",
+      "geocoding"
     ],
     "license": "MIT",
     "authors": [

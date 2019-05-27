@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static array search(string|int $postcode, bool $geolocation = false)
+ * @method static array|null geocoding(array|\Fndmiranda\Address\Entities\Address $address, array $complements = [])
  *
  * @see \Fndmiranda\Address\Address
  */

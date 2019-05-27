@@ -4,6 +4,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Adapters
+    |--------------------------------------------------------------------------
+    |
+    | Here you can specify api adapters for address search by postcode.
+    |
+    */
+
+    'apis' => [
+        Fndmiranda\Address\Adapters\ViaCepAdapter::class,
+        Fndmiranda\Address\Adapters\PostmonAdapter::class,
+        Fndmiranda\Address\Adapters\WidenetAdapter::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Priority
+    |--------------------------------------------------------------------------
+    |
+    | Forces the priority of the Api`s list or randomizes the list as load balancing.
+    |
+    */
+
+    'force_priority' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Google Key
     |--------------------------------------------------------------------------
     |
@@ -19,21 +45,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Polymorphic Relationship
+    | Database
     |--------------------------------------------------------------------------
     |
-    | Here you can specify the column type of your primary key that will
-    | make the polymorphic relationship.
-    | The types are uuid, bigInteger and integer
+    | Here you can specify whether to manage and store the address data
+    | and the column type of your primary key that will make the polymorphic relationship.
+    | The types are uuid, bigInteger and integer.
     |
     */
 
-    'column_type' => env('ADDRESS_COLUMN_TYPE', 'uuid'),
+    'manager_address' => true,
 
-    'force_priority' => false,
-
-    'api' => [
-        Fndmiranda\Address\Adapters\ViaCepAdapter::class,
-    ],
-
+    'column_type' => 'integer',
 ];

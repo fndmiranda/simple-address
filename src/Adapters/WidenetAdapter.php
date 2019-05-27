@@ -5,7 +5,7 @@ namespace Fndmiranda\Address\Adapters;
 use Fndmiranda\Contracts\AdapterContract;
 use GuzzleHttp\Psr7\Request;
 
-class ViaCepAdapter implements AdapterContract
+class WidenetAdapter implements AdapterContract
 {
     /**
      * Search external address by postcode.
@@ -17,16 +17,18 @@ class ViaCepAdapter implements AdapterContract
     public function search($postcode)
     {
         $client = new \GuzzleHttp\Client();
-        $request = new Request('GET', 'https://viacep.com.br/ws/'.$postcode.'/json/');
+        $request = new Request('GET', 'http://apps.widenet.com.br/busca-cep/api/cep/'.$postcode.'.json');
         $response = $client->send($request);
 
-        $data = json_decode((string) $response->getBody(), true);
+        if ($response->getStatusCode() == 200) {
+            $data = json_decode((string) $response->getBody(), true);
 
-        if (!empty($data['erro'])) {
-            return false;
+            if ((bool) $data['status']) {
+                return $this->prepare($data);
+            }
         }
 
-        return $this->prepare($data);
+        return false;
     }
 
     /**
@@ -38,11 +40,11 @@ class ViaCepAdapter implements AdapterContract
     public function prepare($data)
     {
         return [
-            'postcode' => $data['cep'],
-            'address' => $data['logradouro'],
-            'neighborhood' => $data['bairro'],
-            'city' => $data['localidade'],
-            'state' => $data['uf'],
+            'postcode' => $data['code'],
+            'address' => $data['address'],
+            'neighborhood' => $data['district'],
+            'city' => $data['city'],
+            'state' => $data['state'],
         ];
     }
 }
