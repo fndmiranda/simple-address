@@ -1,8 +1,8 @@
 <?php
 
-namespace Fndmiranda\Address\Adapters;
+namespace Fndmiranda\SimpleAddress\Adapters;
 
-use Fndmiranda\Contracts\AdapterContract;
+use Fndmiranda\SimpleAddress\Contracts\AdapterContract;
 use GuzzleHttp\Psr7\Request;
 
 class PostmonAdapter implements AdapterContract

@@ -1,8 +1,8 @@
 <?php
 
-namespace Fndmiranda\Repositories;
+namespace Fndmiranda\SimpleAddress\Repositories;
 
-use Fndmiranda\Address\Entities\Address;
+use Fndmiranda\SimpleAddress\Entities\Address;
 
 class AddressRepository
 {
@@ -10,7 +10,7 @@ class AddressRepository
      * Get a address by the given postcode.
      *
      * @param string $postcode
-     * @return \Fndmiranda\Address\Entities\Address
+     * @return \Fndmiranda\SimpleAddress\Entities\Address
      */
     public function findByPostcode($postcode)
     {

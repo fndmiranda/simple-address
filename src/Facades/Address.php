@@ -1,14 +1,14 @@
 <?php
 
-namespace Fndmiranda\Address\Facades;
+namespace Fndmiranda\SimpleAddress\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static array search(string|int $postcode, bool $geolocation = false)
- * @method static array|null geocoding(array|\Fndmiranda\Address\Entities\Address $address, array $complements = [])
+ * @method static array|null geocoding(array|\Fndmiranda\SimpleAddress\Entities\Address $address, array $complements = [])
  *
- * @see \Fndmiranda\Address\Address
+ * @see \Fndmiranda\SimpleAddress\Address
  */
 class Address extends Facade
 {

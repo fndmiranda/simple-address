@@ -1,9 +1,9 @@
 <?php
 
-namespace Fndmiranda\Address;
+namespace Fndmiranda\SimpleAddress;
 
-use Fndmiranda\Repositories\AddressRepository;
-use Fndmiranda\Repositories\StateRepository;
+use Fndmiranda\SimpleAddress\Repositories\AddressRepository;
+use Fndmiranda\SimpleAddress\Repositories\StateRepository;
 
 class Address
 {
@@ -26,8 +26,8 @@ class Address
     /**
      * Create a new address instance.
      *
-     * @param \Fndmiranda\Repositories\AddressRepository $addressRepository
-     * @param \Fndmiranda\Repositories\StateRepository $stateRepository
+     * @param \Fndmiranda\SimpleAddress\Repositories\AddressRepository $addressRepository
+     * @param \Fndmiranda\SimpleAddress\Repositories\StateRepository $stateRepository
      * @return void
      */
     public function __construct(

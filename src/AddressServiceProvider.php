@@ -1,6 +1,6 @@
 <?php
 
-namespace Fndmiranda\Address;
+namespace Fndmiranda\SimpleAddress;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;

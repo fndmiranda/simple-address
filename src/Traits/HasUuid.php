@@ -1,6 +1,6 @@
 <?php
 
-namespace Fndmiranda\Address\Traits;
+namespace Fndmiranda\SimpleAddress\Traits;
 
 use Illuminate\Support\Str;
 

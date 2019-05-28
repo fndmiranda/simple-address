@@ -1,8 +1,8 @@
 <?php
 
-namespace Fndmiranda\Address\Entities;
+namespace Fndmiranda\SimpleAddress\Entities;
 
-use Fndmiranda\Address\Traits\HasUuid;
+use Fndmiranda\SimpleAddress\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class City extends Model

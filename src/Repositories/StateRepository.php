@@ -1,8 +1,8 @@
 <?php
 
-namespace Fndmiranda\Repositories;
+namespace Fndmiranda\SimpleAddress\Repositories;
 
-use Fndmiranda\Address\Entities\State;
+use Fndmiranda\SimpleAddress\Entities\State;
 
 class StateRepository
 {
@@ -10,7 +10,7 @@ class StateRepository
      * Retrieve state by name, or create it.
      *
      * @param string $name
-     * @return \Fndmiranda\Address\Entities\State
+     * @return \Fndmiranda\SimpleAddress\Entities\State
      */
     public function firstOrCreate($name)
     {

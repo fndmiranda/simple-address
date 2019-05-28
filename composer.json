@@ -27,7 +27,7 @@
     "extra": {
       "laravel": {
         "providers": [
-          "Fndmiranda\\Address\\AddressServiceProvider"
+          "Fndmiranda\\SimpleAddress\\AddressServiceProvider"
         ]
       }
     },

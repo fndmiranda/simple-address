@@ -1,8 +1,8 @@
 <?php
 
-namespace Fndmiranda\Address\Entities;
+namespace Fndmiranda\SimpleAddress\Entities;
 
-use Fndmiranda\Address\Traits\HasUuid;
+use Fndmiranda\SimpleAddress\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
@@ -22,7 +22,7 @@ class Address extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'postcode', 'neighborhood_id',
+        'name', 'postcode', 'neighborhood_id', 'number',
     ];
 
     /**

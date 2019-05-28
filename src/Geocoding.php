@@ -1,8 +1,8 @@
 <?php
 
-namespace Fndmiranda\Address;
+namespace Fndmiranda\SimpleAddress;
 
-use Fndmiranda\Address\Entities\Address;
+use Fndmiranda\SimpleAddress\Entities\Address;
 
 trait Geocoding
 {

@@ -12,9 +12,9 @@ return [
     */
 
     'apis' => [
-        Fndmiranda\Address\Adapters\ViaCepAdapter::class,
-        Fndmiranda\Address\Adapters\PostmonAdapter::class,
-        Fndmiranda\Address\Adapters\WidenetAdapter::class,
+        Fndmiranda\SimpleAddress\Adapters\ViaCepAdapter::class,
+        Fndmiranda\SimpleAddress\Adapters\PostmonAdapter::class,
+        Fndmiranda\SimpleAddress\Adapters\WidenetAdapter::class,
     ],
 
     /*

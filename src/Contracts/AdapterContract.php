@@ -1,6 +1,6 @@
 <?php
 
-namespace Fndmiranda\Contracts;
+namespace Fndmiranda\SimpleAddress\Contracts;
 
 interface AdapterContract
 {
