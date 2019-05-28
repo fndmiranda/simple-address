@@ -21,13 +21,13 @@
     },
     "autoload": {
       "psr-4": {
-        "Fndmiranda\\Address\\": "src/"
+        "Fndmiranda\\SimpleAddress\\": "src/"
       }
     },
     "extra": {
       "laravel": {
         "providers": [
-          "Fndmiranda\\SimpleAddress\\AddressServiceProvider"
+          "Fndmiranda\\SimpleAddress\\SimpleAddressServiceProvider"
         ]
       }
     },

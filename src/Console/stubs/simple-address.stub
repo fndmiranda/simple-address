@@ -1,0 +1,30 @@
+<?php
+
+namespace DummyNamespace;
+
+use Fndmiranda\SimpleAddress\Contracts\AdapterContract;
+
+class DummyClass implements AdapterContract
+{
+    /**
+     * Search external address by postcode.
+     *
+     * @param $postcode
+     * @return array|bool
+     */
+    public function search($postcode)
+    {
+        //
+    }
+
+    /**
+     * Prepare address data.
+     *
+     * @param $data
+     * @return array
+     */
+    public function prepare($data)
+    {
+        //
+    }
+}

@@ -4,8 +4,9 @@ namespace Fndmiranda\SimpleAddress;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
+use Fndmiranda\SimpleAddress\Console;
 
-class AddressServiceProvider extends ServiceProvider
+class SimpleAddressServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -20,6 +21,14 @@ class AddressServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations' => database_path('migrations'),
             ], 'simple-address-migrations');
+
+            $this->publishes([
+                __DIR__ . '/../config/address.php' => config_path('address.php'),
+            ], 'simple-address-config');
+
+            $this->commands([
+                Console\SimpleAddressMakeCommand::class,
+            ]);
         }
     }
 

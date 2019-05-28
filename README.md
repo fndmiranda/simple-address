@@ -1,7 +1,7 @@
 # Simple address from Laravel
 
-This package simplifies the search and management of addresses, being able to create and add new adapter of search 
-in public apis by postcode.
+This package simplifies the search for addresses by zip code in Api`s and the management of addresses in the database, 
+you can also create your own adapters for api queries.
 
 ## Installation
 
@@ -11,253 +11,82 @@ composer require fndmiranda/simple-address
 
 ## Usage
 
-You may generate an data migration of the `data-migration:make` Artisan command:
+Publish the package configuration file with `vendor:publish` Artisan command:
 
 ```terminal
-php artisan data-migration:make PermissionDataMigration
+php artisan vendor:publish --tag=simple-address-config
 ```
 
-This command will generate a data migration at `app/DataMigrations/PermissionDataMigration.php`. The data migration will contain the `model`, `data`, and `options` methods.
+The published configuration file `address.php` will be placed in your `config` directory.
+
+### Api`s of search
+
+The list of Api's available is located in your `config/address.php` file in `apis` and you can remove or add new adapters as follows:
+
+```php
+'apis' => [
+    Fndmiranda\SimpleAddress\Adapters\ViaCepAdapter::class,
+    Fndmiranda\SimpleAddress\Adapters\PostmonAdapter::class,
+    Fndmiranda\SimpleAddress\Adapters\WidenetAdapter::class,
+],
+```
+
+If you change `force_priority` in `config/address.php` to `true` the search order will always conform to the list of `apis` 
+adapters, by default this value is `false` for the order to be random.
+
+With the `search` method on the facade of the `Address` the package will loop in the apis until finding the requested postcode as follows:
+
+```php
+$address = Address::search(38017170);
+```
+
+### Geocoding
+
+You can use the data returned by the `search` method to obtain the `latitude` and `longitude` of the address with the 
+`geocoding` method of the facade `Address` as follows:
+
+```php
+$address = Address::search(38017170);
+
+$geocode = Address::geocoding($address);
+```
+
+Note To use the `geocoding` feature you need to provide the Google Maps API `key`, add the `ADDRESS_GOOGLE_MAPS_KEY` 
+entry in your `.env` file as follows:
+
+```env
+ADDRESS_GOOGLE_MAPS_KEY=YourMapsKey
+```
+
+### Database
+
+This package comes with a complete database structure to store the searched addresses.
+
+Note that a table for polymorphism will be created, which should be created with the type of column that will make the 
+relation the same that you use in your tables by setting the `column_type` in the `config/address.php` file and the 
+options are `integer`, `bigInteger` and `uuid` there then create the tables with `migrate` Artisan command:
+
+```terminal
+php artisan migrate
+```
+
+If you do not want to manage the addresses in the database and just want to query in api, 
+change the `config/address.php` file `manager_address` to `false`.
+
+### Saving in database
+
+Example of integration of supplier model with address polymorphism.
 
 ```php
 <?php
 
-namespace App\DataMigrations;
+namespace App\Supplier;
 
-use Fndmiranda\DataMigration\Contracts\DataMigration;
-
-class PermissionDataMigration implements DataMigration
-{
-    /**
-     * Get the model being used by the data migration.
-     *
-     * @return string
-     */
-    public function model()
-    {
-        //
-    }
-
-    /**
-     * Get the data being used by the data migration.
-     *
-     * @return mixed
-     */
-    public function data()
-    {
-        //
-    }
-
-    /**
-     * Get the data options being used by the data migration.
-     *
-     * @return mixed
-     */
-    public function options()
-    {
-        //
-    }
-}
-```
-
-#### Method model
-
-Method to specify the model bound to the data migration class.
-
-```php
-/**
- * Get the model being used by the data migration.
- *
- * @return string
- */
-public function model()
-{
-    return \App\Permission::class;
-}
-```
-
-#### Method data
-
-Method to specify the data to be migrated.
-
-```php
-/**
- * Get the data being used by the data migration.
- *
- * @return mixed
- */
-public function data()
-{
-    return [
-       ['name' => 'product.products.index', 'title' => 'List products', 'group' => 'Product'],
-       ['name' => 'product.products.show', 'title' => 'Show product', 'group' => 'Product'],
-       ['name' => 'product.products.store', 'title' => 'Create product', 'group' => 'Product'],
-       ['name' => 'product.products.update', 'title' => 'Update product', 'group' => 'Product'],
-       ['name' => 'product.products.destroy', 'title' => 'Delete product', 'group' => 'Product'],
-
-       ['name' => 'product.brands.index', 'title' => 'List brands', 'group' => 'Product'],
-       ['name' => 'product.brands.show', 'title' => 'Show brand', 'group' => 'Product'],
-       ['name' => 'product.brands.store', 'title' => 'Create brand', 'group' => 'Product'],
-       ['name' => 'product.brands.update', 'title' => 'Update brand', 'group' => 'Product'],
-       ['name' => 'product.brands.destroy', 'title' => 'Delete brand', 'group' => 'Product'],
-   ];
-}
-```
-
-#### Method options
-
-The options method to specify the parameters to be used in the migration.
-
-```php
-/**
- * Get the data options being used by the data migration.
- *
- * @return mixed
- */
-public function options()
-{
-    return [
-       'identifier' => 'name',
-       'show' => ['name', 'title'],
-   ];
-}
-```
-
-The following keys are available as options:
-
-Key | Description | Type
---- | --- | ---
-identifier | Column with unique value to validate status. | string
-show | Columns to show in commands output. | array
-relations | Relationships options, see the usage with relationships. | array
-
-## Run a data migration
-
-You can run a data migration via command or facade.
-
-Show the status of each data with the database with `data-migration:status` Artisan command:
-
-```terminal
-php artisan data-migration:status App\\DataMigrations\\PermissionDataMigration
-```
-
-Output:
-
-```terminal
-+--------------------------+------------------------+--------+
-| name                     | title                  | status |
-+--------------------------+------------------------+--------+
-| product.products.index   | List products          | Create |
-| product.products.show    | Show product           | OK     |
-| product.products.store   | Create product updated | Update |
-| product.products.destroy | Delete product         | OK     |
-| product.brands.show      | Show brand             | Create |
-| product.brands.store     | Create brand updated   | Update |
-| product.brands.update    | Update brand           | OK     |
-| product.brands.destroy   | Delete brand           | OK     |
-| product.products.update  | Update product         | Delete |
-| product.brands.index     | List brands            | Delete |
-+--------------------------+------------------------+--------+
-```
-
-Or with `DataMigration` facade:
-
-```php
-$status = DataMigration::status(\App\DataMigrations\PermissionDataMigration::class);
-```
-
-Show changes between data migration and database with `data-migration:diff` Artisan command:
-
-```terminal
-php artisan data-migration:diff App\\DataMigrations\\PermissionDataMigration
-```
-
-Output:
-
-```terminal
-+--------------------------+------------------------+--------+
-| name                     | title                  | status |
-+--------------------------+------------------------+--------+
-| product.products.index   | List products          | Create |
-| product.products.store   | Create product updated | Update |
-| product.brands.show      | Show brand             | Create |
-| product.brands.store     | Create brand updated   | Update |
-| product.products.update  | Update product         | Delete |
-| product.brands.index     | List brands            | Delete |
-+--------------------------+------------------------+--------+
-```
-
-Or with `DataMigration` facade:
-
-```php
-$diff = DataMigration::diff(\App\DataMigrations\PermissionDataMigration::class);
-```
-
-Migrate data from a data migration to the database. Only necessary operations with status to create will be executed 
-with `data-migration:migrate` Artisan command:
-
-```terminal
-php artisan data-migration:migrate App\\DataMigrations\\PermissionDataMigration
-```
-
-Output:
-
-```terminal
-+--------------------------+------------------------+--------+
-| name                     | title                  | status |
-+--------------------------+------------------------+--------+
-| product.products.index   | List products          | Create |
-| product.brands.show      | Show brand             | Create |
-+--------------------------+------------------------+--------+
-```
-
-Or with `DataMigration` facade:
-
-```php
-$migrated = DataMigration::migrate(\App\DataMigrations\PermissionDataMigration::class);
-```
-
-Synchronize data from a data migration with the database. All necessary `create`, `update`, and `delete` operations will be 
-performed with `data-migration:sync` Artisan command:
-
-```terminal
-php artisan data-migration:sync App\\DataMigrations\\PermissionDataMigration
-```
-
-Output:
-
-```terminal
-+--------------------------+------------------------+--------+
-| name                     | title                  | status |
-+--------------------------+------------------------+--------+
-| product.products.index   | List products          | Create |
-| product.products.store   | Create product updated | Update |
-| product.brands.show      | Show brand             | Create |
-| product.brands.store     | Create brand updated   | Update |
-| product.products.update  | Update product         | Delete |
-| product.brands.index     | List brands            | Delete |
-+--------------------------+------------------------+--------+
-```
-
-Or with `DataMigration` facade:
-
-```php
-$synchronized = DataMigration::sync(\App\DataMigrations\PermissionDataMigration::class);
-```
-
-## Usage with relationships
-
-Example of a permissions model with a relationship for dependencies of type belongsToMany with pivot_example_1 and 
-pivot_example_2, and a relationship for brand of type belongsTo to exemplify a data migration.
-
-```php
-<?php
-
-namespace App;
-
+use Fndmiranda\SimpleAddress\Entities\Address;
 use Illuminate\Database\Eloquent\Model;
+use Fndmiranda\SimpleAddress\Pivot\AddressPivot;
 
-class Permission extends Model
+class Supplier extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -265,100 +94,134 @@ class Permission extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'title', 'group', 'brand_id',
+        'name', 'email', 'document', 'is_active',
     ];
 
     /**
-     * The dependencies that belong to the permission.
+     * Get all of the addresses for the supplier.
      */
-    public function dependencies()
+    public function addresses()
     {
-        return $this->belongsToMany(Permission::class)->withPivot(['pivot_example_1', 'pivot_example_2']);
+        return $this->morphToMany(Address::class, 'addressable', 'address_addressables')
+            ->withPivot(['number', 'complement', 'lat', 'lng'])
+            ->using(AddressPivot::class)
+            ->withTimestamps();
+    }
+}
+```
+
+You can then save the address to a supplier by using the `search` and `geocoding` methods of the facade `Address` 
+as in the following example:
+
+```php
+// Find a supplier
+$supplier = \App\Supplier::find(1);
+
+// Search a address by postcode
+$address = Address::search(38017170);
+
+// Get geocode of address
+$geocode = Address::geocoding($address);
+
+// Save an address to the supplier
+$attributes = array_merge(['number' => 16, 'complement' => 'House'], $geocode);
+$supplier->addresses()->save($address, $attributes);
+
+// Or without geocode
+$supplier->addresses()->save($address, ['number' => 16, 'complement' => 'House']);
+
+// To update a supplier address
+$supplier->addresses()->first()->pivot->update(['number' => 25, 'complement' => 'Store 10']);
+```
+
+## Creating your custom adapter
+
+You can create your own custom adapter to query an API that is not in the list, you may generate an 
+adapter of the `simple-address:make` Artisan command:
+
+```terminal
+php artisan simple-address:make YourApiAdapter
+```
+
+This command will generate a adapter at `app/SimpleAddress/Adapters/YourApiAdapter.php`. 
+
+The file will contain the empty `search` and` prepare` methods, so you can adapt them by following the file 
+structure as in the following example:
+
+```php
+<?php
+
+namespace App\SimpleAddress\Adapters;
+
+use Fndmiranda\SimpleAddress\Contracts\AdapterContract;
+
+class YourApiAdapter implements AdapterContract
+{
+    /**
+     * Search external address by postcode.
+     *
+     * @param $postcode
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function search($postcode)
+    {
+        $client = new \GuzzleHttp\Client();
+        $request = new \GuzzleHttp\Psr7\Request('GET', 'https://api.postmon.com.br/v1/cep/'.$postcode.'?format=json');
+        $response = $client->send($request);
+
+        if ($response->getStatusCode() != 200) {
+            return false;
+        }
+
+        $data = json_decode((string) $response->getBody(), true);
+
+        return $this->prepare($data);
     }
 
     /**
-     * Get the brand of the permission.
+     * Prepare address data.
+     *
+     * @param $data
+     * @return array
      */
-    public function brand()
+    public function prepare($data)
     {
-        return $this->belongsTo(Brand::class);
+        return [
+            'postcode' => $data['cep'],
+            'address' => $data['logradouro'],
+            'neighborhood' => $data['bairro'],
+            'city' => $data['cidade'],
+            'state' => $data['estado'],
+        ];
     }
 }
 ```
 
-#### Method data with relationships
-
-The data method to specify the data to be migrated with relationships.
+Add your adapter to the `apis` list in the `config/address.php` file as follows:
 
 ```php
-/**
- * Get the data being used by the data migration.
- *
- * @return mixed
- */
-public function data()
-{
-    return [
-       ['name' => 'product.products.index', 'title' => 'List products', 'group' => 'Product', 'brand' => ['name' => 'Brand test 1']],
-       ['name' => 'product.products.show', 'title' => 'Show product', 'group' => 'Product'],
-       ['name' => 'product.products.store', 'title' => 'Create product', 'group' => 'Product', 'dependencies' => [
-           ['name' => 'product.brands.index', 'pivot_example_1' => 'Pivot value 1'], ['name' => 'product.categories.index'],
-       ], 'brand' => ['name' => 'Brand test 2']],
-       ['name' => 'product.products.update', 'title' => 'Update product', 'group' => 'Product', 'dependencies' => [
-           ['name' => 'product.brands.index'], ['name' => 'product.categories.index', 'pivot_example_2' => 'Pivot value 2'],
-       ]],
-       ['name' => 'product.products.destroy', 'title' => 'Delete product', 'group' => 'Product'],
-
-       ['name' => 'product.brands.index', 'title' => 'List brands', 'group' => 'Product', 'brand' => ['name' => 'Brand test 1']],
-       ['name' => 'product.brands.show', 'title' => 'Show brand', 'group' => 'Product'],
-       ['name' => 'product.brands.store', 'title' => 'Create brand', 'group' => 'Product'],
-       ['name' => 'product.brands.update', 'title' => 'Update brand', 'group' => 'Product', 'brand' => ['name' => 'Brand test 2']],
-       ['name' => 'product.brands.destroy', 'title' => 'Delete brand', 'group' => 'Product'],
-   ];
-}
+'apis' => [
+    Fndmiranda\SimpleAddress\Adapters\ViaCepAdapter::class,
+    Fndmiranda\SimpleAddress\Adapters\PostmonAdapter::class,
+    Fndmiranda\SimpleAddress\Adapters\WidenetAdapter::class,
+    App\SimpleAddress\Adapters\YourApiAdapter::class, // Your custom Api adapter
+],
 ```
 
-#### Method options with relationships
+If you create a new Api adapter, I would appreciate if you open a pull request by adding your adapter and mapping 
+it in the `apis` list in `config/address.php` of the package.
 
-The options method with relationships to specify the parameters to be used in the data migration.
+#### Method search
 
-```php
-/**
- * Get the data options being used by the data migration.
- *
- * @return mixed
- */
-public function options()
-{
-    return [
-       'identifier' => 'name',
-       'show' => ['name', 'title'],
-       'relations' => [
-           [
-               'type' => 'belongsToMany',
-               'relation' => 'dependencies',
-               'identifier' => 'name',
-               'show' => ['name'],
-           ],
-           [
-               'type' => 'belongsTo',
-               'relation' => 'brand',
-               'identifier' => 'name',
-               'show' => ['name'],
-           ],
-       ],
-   ];
-}
-```
+The `search` method sends the request to an endpoint to query a `postcode` and uses the `prepare` method to transform the 
+obtained data into a standard array and returns them or returns `false` if the `postcode` is not found or if api does 
+not respond so that it automatically query on the next api `adapter`.
 
-The following keys are available as relationships options:
+#### Method prepare
 
-Key | Description | Type
---- | --- | ---
-relation | Name of the relationship of the model. | string
-type | Model relationship type, `belongsToMany` or `belongsTo`. | string
-identifier | Column with unique value to validate status. | string
-show | Columns to show in commands output. | array
+The `prepare` method will transform the data returned by an api into a standard `array` with the 
+keys `postcode`, `address`, `neighborhood`, `city` and `state`.
 
 ## Security
 
