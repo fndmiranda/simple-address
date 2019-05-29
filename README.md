@@ -113,7 +113,7 @@ class Supplier extends Model
     public function addresses()
     {
         return $this->morphToMany(Address::class, 'addressable', 'address_addressables')
-            ->withPivot(['number', 'complement', 'lat', 'lng'])
+            ->withPivot(['number', 'complement', 'lat', 'lng', 'type'])
             ->using(AddressPivot::class)
             ->withTimestamps();
     }
