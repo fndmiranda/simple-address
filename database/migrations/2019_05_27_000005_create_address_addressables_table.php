@@ -23,6 +23,7 @@ class CreateAddressAddressablesTable extends Migration
             $table->string('complement', 150)->nullable();
             $table->decimal('lat', 11, 8)->nullable();
             $table->decimal('lng', 11, 8)->nullable();
+            $table->string('type', 32)->nullable();
             $table->timestamps();
         });
     }
