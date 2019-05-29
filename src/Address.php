@@ -10,6 +10,13 @@ class Address
     use Geocoding;
 
     /**
+     * Indicates if migrations will be run.
+     *
+     * @var bool
+     */
+    public static $runsMigrations = true;
+
+    /**
      * The address repository instance.
      *
      * @var AddressRepository

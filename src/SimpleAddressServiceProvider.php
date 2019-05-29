@@ -15,12 +15,14 @@ class SimpleAddressServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if ($this->app->runningInConsole() && config('address.manager_address')) {
-            $this->registerMigrations();
+        if ($this->app->runningInConsole()) {
+            if (config('address.manager_address')) {
+                $this->registerMigrations();
 
-            $this->publishes([
-                __DIR__.'/../database/migrations' => database_path('migrations'),
-            ], 'simple-address-migrations');
+                $this->publishes([
+                    __DIR__ . '/../database/migrations' => database_path('migrations'),
+                ], 'simple-address-migrations');
+            }
 
             $this->publishes([
                 __DIR__ . '/../config/address.php' => config_path('address.php'),
@@ -51,6 +53,8 @@ class SimpleAddressServiceProvider extends ServiceProvider
      */
     protected function registerMigrations()
     {
-        return $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        if (Address::$runsMigrations) {
+            return $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        }
     }
 }

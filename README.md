@@ -70,6 +70,16 @@ options are `integer`, `bigInteger` and `uuid` there then create the tables with
 php artisan migrate
 ```
 
+### Migration Customization
+
+If you are not going to use SimpleAddress default migrations, you should call the `Address::ignoreMigrations` method in 
+the register method of your `AppServiceProvider`. 
+You may export the default migrations using `vendor:publish` Artisan command:
+
+```terminal
+php artisan vendor:publish --tag=simple-address-migrations
+```
+
 If you do not want to manage the addresses in the database and just want to query in api, 
 change the `config/address.php` file `manager_address` to `false`.
 
