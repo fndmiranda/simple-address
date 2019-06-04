@@ -1,31 +1,32 @@
 # Art of README
 
-*This article can also be read in [Brazilian Portuguese](README-pt-BR.md).*
+*Este artigo foi traduzido do [Inglês](README.md) e traduzido para [Português](README-pt-BR.md).*
 
-## Simple address from Laravel
+## Endereço simples para Laravel
 
-This package simplifies the search for addresses by zip code in Api`s and the management of addresses in the database, 
-you can also create your own adapters for api queries.
+Este pacote simplifica a busca de endereços por CEP em Api's e o gerenciamento de endereços no banco de dados,
+você também pode criar seus próprios adaptadores para consultas em uma Api.
 
-### Installation
+### Instalação
 
 ```
 composer require fndmiranda/simple-address
 ```
 
-### Usage
+### Uso
 
-Publish the package configuration file with `vendor:publish` Artisan command:
+Publique o arquivo de configuração do pacote com o comando `vendor: publish` Artisan:
 
 ```terminal
 php artisan vendor:publish --tag=simple-address-config
 ```
 
-The published configuration file `address.php` will be placed in your `config` directory.
+O arquivo de configuração publicado `address.php` será colocado no diretório` config`.
 
-## Api`s of search
+## Api`s para pesquisa
 
-The list of Api's available is located in your `config/address.php` file in `apis` and you can remove or add new adapters as follows:
+A lista de Api disponível está localizada no seu arquivo `config/address.php` no` apis` e você pode remover ou 
+adicionar novos adaptadores da seguinte maneira:
 
 ```php
 'apis' => [
@@ -35,19 +36,20 @@ The list of Api's available is located in your `config/address.php` file in `api
 ],
 ```
 
-If you change `force_priority` in `config/address.php` to `true` the search order will always conform to the list of `apis` 
-adapters, by default this value is `false` for the order to be random.
+Se você alterar `force_priority` em` config/address.php` para `true`, a ordem de busca sempre estará de 
+acordo com a lista de adaptadores em `apis`, por padrão, esse valor é `false` para que a ordem seja aleatória.
 
-With the `search` method on the facade of the `Address` the package will loop in the apis until finding the requested postcode as follows:
+Com o método `search` da facade do` Address`, o pacote executará um loop nas apis até encontrar o endereço 
+com o CEP solicitado da seguinte forma:
 
 ```php
 $address = Address::search(38017170);
 ```
 
-## Geocoding
+## Geocodificação
 
-You can use the data returned by the `search` method to obtain the `latitude` and `longitude` of the address with the 
-`geocoding` method of the facade `Address` as follows:
+Você pode usar os dados retornados pelo método `search` para obter a `latitude` e a `longitude` do endereço com o
+método `geocoding` da facade` Address` da seguinte forma:
 
 ```php
 $address = Address::search(38017170);
@@ -55,41 +57,41 @@ $address = Address::search(38017170);
 $geocode = Address::geocoding($address);
 ```
 
-Note, to use the `geocoding` feature you need to provide the Google Maps API `key`, add the `ADDRESS_GOOGLE_MAPS_KEY` 
-entry in your `.env` file as follows:
+Observação, para usar o recurso `geocoding` você precisa fornecer a `key` da API do Google Maps, 
+adicione a entrada `ADDRESS_GOOGLE_MAPS_KEY` no seu arquivo `.env` da seguinte maneira:
 
 ```env
 ADDRESS_GOOGLE_MAPS_KEY=YourMapsKey
 ```
 
-## Database
+## Banco de dados
 
-This package comes with a complete database structure to store the searched addresses.
+Este pacote vem com uma estrutura de banco de dados completa para armazenar os endereços pesquisados.
 
-Note that a table for polymorphism will be created, which should be created with the type of column that will make the 
-relation the same that you use in your tables by setting the `column_type` in the `config/address.php` file and the 
-options are `integer`, `bigInteger` and `uuid` there then create the tables with `migrate` Artisan command:
+Observe que uma tabela para polimorfismo será criada e que deve ser criada com o tipo de coluna igual ao que fará 
+relação com suas tabelas, para isso você deve definir o `column_type` no arquivo` config/address.php`
+as opções são `integer`, ` bigInteger` e `uuid`, então crie as tabelas com o comando `migrate` Artisan:
 
 ```terminal
 php artisan migrate
 ```
 
-### Migration Customization
+### Personalização das migrações
 
-If you are not going to use SimpleAddress default migrations, you should call the `Address::ignoreMigrations` method in 
-the `register` method of your `AppServiceProvider`. 
-You may export the default migrations using `vendor:publish` Artisan command:
+Se você não for usar as migrações padrão do SimpleAddress, você deve chamar o método `Address::ignoreMigrations` no 
+método `register` do seu `AppServiceProvider`.
+E então exportar as migrações padrão usando o comando `vendor:publish` Artisan:
 
 ```terminal
 php artisan vendor:publish --tag=simple-address-migrations
 ```
 
-If you do not want to manage the addresses in the database and just want to query in api, 
-change the `config/address.php` file `manager_address` to `false`.
+Se você não deseja gerenciar os endereços no banco de dados e apenas deseja consultar nas Api's,
+mude o arquivo `config/address.php` o `manager_address` para `false`.
 
-### Saving in database
+### Salvando no banco de dados
 
-Example of integration of supplier model with address polymorphism.
+Exemplo de integração do modelo de fornecedor com polimorfismo de endereço.
 
 ```php
 <?php
@@ -124,31 +126,31 @@ class Supplier extends Model
 }
 ```
 
-You can then save the address to a supplier by using the `search` and `geocoding` methods of the facade `Address` 
-as in the following example:
+Você pode então salvar o endereço para um fornecedor usando os métodos `search` e` geocoding` da facade `Address`
+como no exemplo a seguir:
 
 ```php
-// Find a supplier
+// Encontre um fornecedor
 $supplier = \App\Supplier::find(1);
 
-// Search a address by postcode
+// Pesquise um endereço por código postal
 $address = Address::search(38017170);
 
-// Get geocode of address
+// Obter geocódigo do endereço
 $geocode = Address::geocoding($address);
 
-// Save an address to the supplier
+// Salvar um endereço para o fornecedor
 $attributes = array_merge(['number' => 16, 'complement' => 'House'], $geocode);
 $supplier->addresses()->save($address, $attributes);
 
-// Or without geocode
+// Ou sem geocódigo
 $supplier->addresses()->save($address, ['number' => 16, 'complement' => 'House']);
 
-// To update a supplier address
+// Para atualizar um endereço de fornecedor
 $supplier->addresses()->first()->pivot->update(['number' => 25, 'complement' => 'Store 10']);
 ```
 
-### Or in your controller
+### Ou no seu controlador
 
 ```php
 <?php
@@ -249,7 +251,7 @@ class SupplierController extends Controller
 }
 ```
 
-Request body example
+Exemplo do corpo da solicitação
 
 ```json
 {
@@ -265,19 +267,20 @@ Request body example
 }
 ```
 
-## Creating your custom adapter
+## Criando seu adaptador customizado
 
-You can create your own custom adapter to query an API that is not in the list, you may generate an 
-adapter of the `simple-address:make` Artisan command:
+Você pode criar seu próprio adaptador personalizado para consultar uma API que não está na lista.
+
+Você pode gerar um adaptador do comando `simple-address:make` Artisan:
 
 ```terminal
 php artisan simple-address:make YourApiAdapter
 ```
 
-This command will generate a adapter at `app/SimpleAddress/Adapters/YourApiAdapter.php`. 
+Este comando gerará um adaptador por padrão em `app/SimpleAddress/Adapters/YourApiAdapter.php`.
 
-The file will contain the empty `search` and` prepare` methods, so you can adapt them by following the file 
-structure as in the following example:
+O arquivo irá conter os métodos `search` e `prepare` vazios, para que você possa adaptá-los seguindo o arquivo
+de exemplo a seguir:
 
 ```php
 <?php
@@ -329,35 +332,36 @@ class YourApiAdapter implements AdapterContract
 }
 ```
 
-Add your adapter to the `apis` list in the `config/address.php` file as follows:
+Adicione seu adaptador à lista `apis` no arquivo `config/address.php` da seguinte forma:
 
 ```php
 'apis' => [
     Fndmiranda\SimpleAddress\Adapters\ViaCepAdapter::class,
     Fndmiranda\SimpleAddress\Adapters\PostmonAdapter::class,
     Fndmiranda\SimpleAddress\Adapters\WidenetAdapter::class,
-    App\SimpleAddress\Adapters\YourApiAdapter::class, // Your custom Api adapter
+    App\SimpleAddress\Adapters\YourApiAdapter::class, // Seu adaptador de Api personalizado
 ],
 ```
 
-If you create a new Api adapter, I would appreciate if you open a pull request by adding your adapter and mapping 
-it in the `apis` list in `config/address.php` of the package.
+Se você criar um novo adaptador Api, eu agradeceria se você abrir um pull request adicionando seu adaptador e o mapeando
+na lista `apis` em `config/address.php` do pacote.
 
-#### Method search
+### Método search
 
-The `search` method sends the request to an endpoint to query a `postcode` and uses the `prepare` method to transform the 
-obtained data into a standard array and returns them or returns `false` if the `postcode` is not found or if api does 
-not respond so that it automatically query on the next api `adapter`.
+O método `search` envia uma request para um endpoint para consultar um `postcode` e usa o método `prepare` para transformar os
+dados obtidos em um array padrão e os retorna ou retorna `false` se o `postcode` não for encontrado ou se a API 
+não estiver respondendo para que ele consulte automaticamente a próximo api `adapter` até encontrar o endereço pelo CEP fornecido.
 
-#### Method prepare
+### Método prepare
 
-The `prepare` method will transform the data returned by an api into a standard `array` with the 
-keys `postcode`, `address`, `neighborhood`, `city` and `state`.
+O método `prepare` transformará os dados retornados por uma API em um `array` padrão com as
+chaves `postcode`, `address`, `neighborhood`, `city` e `state`.
 
-## Security
+## Segurança
 
-If you discover any security related issues, please email fndmiranda@gmail.com instead of using the issue tracker.
+Se você descobrir algum problema relacionado à segurança, envie um e-mail para fndmiranda@gmail.com em vez de usar o 
+rastreador de problemas.
 
-## License
+## Licença
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+A licença MIT (MIT). Por favor, veja o [Arquivo de licença](LICENSE.md) para mais informações.
