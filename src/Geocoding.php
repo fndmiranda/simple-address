@@ -3,6 +3,7 @@
 namespace Fndmiranda\SimpleAddress;
 
 use Fndmiranda\SimpleAddress\Entities\Address;
+use Illuminate\Support\Arr;
 
 trait Geocoding
 {
@@ -43,7 +44,7 @@ trait Geocoding
             }
         }
 
-        $params = array_merge($params, $complements);
+        $params = array_merge($params, Arr::only($complements, ['number']));
 
         uksort($params, function ($a, $b) use ($mapping) {
             $cmpa = array_search($a, $mapping);
