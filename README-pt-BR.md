@@ -15,17 +15,17 @@ composer require fndmiranda/simple-address
 
 ### Uso
 
-Publique o arquivo de configuração do pacote com o comando `vendor: publish` Artisan:
+Publique o arquivo de configuração do pacote com o comando `vendor:publish` Artisan:
 
 ```terminal
 php artisan vendor:publish --tag=simple-address-config
 ```
 
-O arquivo de configuração publicado `address.php` será colocado no diretório` config`.
+O arquivo de configuração publicado `address.php` será colocado no diretório `config`.
 
 ## Api`s para pesquisa
 
-A lista de Api disponível está localizada no seu arquivo `config/address.php` no` apis` e você pode remover ou 
+A lista de Api disponível está localizada no seu arquivo `config/address.php` no `apis` e você pode remover ou 
 adicionar novos adaptadores da seguinte maneira:
 
 ```php
@@ -36,10 +36,10 @@ adicionar novos adaptadores da seguinte maneira:
 ],
 ```
 
-Se você alterar `force_priority` em` config/address.php` para `true`, a ordem de busca sempre estará de 
+Se você alterar `force_priority` em `config/address.php` para `true`, a ordem de busca sempre estará de 
 acordo com a lista de adaptadores em `apis`, por padrão, esse valor é `false` para que a ordem seja aleatória.
 
-Com o método `search` da facade do` Address`, o pacote executará um loop nas apis até encontrar o endereço 
+Com o método `search` da facade do `Address`, o pacote executará um loop nas apis até encontrar o endereço 
 com o CEP solicitado da seguinte forma:
 
 ```php
@@ -49,7 +49,7 @@ $address = Address::search(38017170);
 ## Geocodificação
 
 Você pode usar os dados retornados pelo método `search` para obter a `latitude` e a `longitude` do endereço com o
-método `geocoding` da facade` Address` da seguinte forma:
+método `geocoding` da facade `Address` da seguinte forma:
 
 ```php
 $address = Address::search(38017170);
@@ -69,8 +69,8 @@ ADDRESS_GOOGLE_MAPS_KEY=YourMapsKey
 Este pacote vem com uma estrutura de banco de dados completa para armazenar os endereços pesquisados.
 
 Observe que uma tabela para polimorfismo será criada e que deve ser criada com o tipo de coluna igual ao que fará 
-relação com suas tabelas, para isso você deve definir o `column_type` no arquivo` config/address.php`
-as opções são `integer`, ` bigInteger` e `uuid`, então crie as tabelas com o comando `migrate` Artisan:
+relação com suas tabelas, para isso você deve definir o `column_type` no arquivo `config/address.php`
+as opções são `integer`, `bigInteger` e `uuid`, então crie as tabelas com o comando `migrate` Artisan:
 
 ```terminal
 php artisan migrate
@@ -87,7 +87,7 @@ php artisan vendor:publish --tag=simple-address-migrations
 ```
 
 Se você não deseja gerenciar os endereços no banco de dados e apenas deseja consultar nas Api's,
-mude o arquivo `config/address.php` o `manager_address` para `false`.
+mude o `manager_address` no arquivo `config/address.php` para `false`.
 
 ### Salvando no banco de dados
 
@@ -126,7 +126,7 @@ class Supplier extends Model
 }
 ```
 
-Você pode então salvar o endereço para um fornecedor usando os métodos `search` e` geocoding` da facade `Address`
+Você pode então salvar o endereço para um fornecedor usando os métodos `search` e `geocoding` da facade `Address`
 como no exemplo a seguir:
 
 ```php
@@ -343,18 +343,18 @@ Adicione seu adaptador à lista `apis` no arquivo `config/address.php` da seguin
 ],
 ```
 
-Se você criar um novo adaptador Api, eu agradeceria se você abrir um pull request adicionando seu adaptador e o mapeando
+Se você criar um novo adaptador para uma Api, eu agradeceria se você abrir um pull request adicionando seu adaptador e o mapeando
 na lista `apis` em `config/address.php` do pacote.
 
 ### Método search
 
 O método `search` envia uma request para um endpoint para consultar um `postcode` e usa o método `prepare` para transformar os
 dados obtidos em um array padrão e os retorna ou retorna `false` se o `postcode` não for encontrado ou se a API 
-não estiver respondendo para que ele consulte automaticamente a próximo api `adapter` até encontrar o endereço pelo CEP fornecido.
+não estiver respondendo para que ele consulte automaticamente a próxima api `adapter` até encontrar o endereço pelo CEP fornecido.
 
 ### Método prepare
 
-O método `prepare` transformará os dados retornados por uma API em um `array` padrão com as
+O método `prepare` deve transformar os dados retornados por uma API em um `array` padrão com as
 chaves `postcode`, `address`, `neighborhood`, `city` e `state`.
 
 ## Segurança
