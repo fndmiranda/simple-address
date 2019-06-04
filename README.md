@@ -144,6 +144,123 @@ $supplier->addresses()->save($address, ['number' => 16, 'complement' => 'House']
 $supplier->addresses()->first()->pivot->update(['number' => 25, 'complement' => 'Store 10']);
 ```
 
+#### In your controller
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Response;
+use App\Supplier;
+use App\Http\Resources\SupplierResource;
+use App\Repositories\SupplierRepository;
+use Fndmiranda\SimpleAddress\Facades\Address;
+use Fndmiranda\SimpleAddress\Repositories\AddressRepository;
+
+class SupplierController extends Controller
+{
+    /**
+     * The supplier repository instance.
+     *
+     * @var SupplierRepository
+     */
+    protected $supplierRepository;
+    
+    /**
+     * The address repository instance.
+     *
+     * @var AddressRepository
+     */
+    protected $addressRepository;
+    
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(SupplierRepository $supplierRepository, AddressRepository $addressRepository)
+    {
+        $this->supplierRepository = $supplierRepository;
+        $this->addressRepository = $addressRepository;
+    }
+    
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param SupplierRequest $request
+     * @return Response
+     */
+    public function store(SupplierRequest $request)
+    {
+        $attributes = $request->all();
+        
+        $entity = $this->addressRepository->create($attributes);
+        
+        if (!empty($attributes['address'])) {
+            if (!empty(config('address.google_maps_key'))) {
+                $address = $this->addressRepository->find($attributes['address']['address_id']);
+                $geocode = Address::geocoding($address, $attributes['address']);
+                if (!empty($geocode)) {
+                    array_merge($attributes['address'], $geocode);
+                }
+            }
+
+            $entity->addresses()->sync([$attributes['address']['address_id'] => $attributes['address']]);
+        }
+        
+        $data = SupplierResource::make($entity);
+        return response()->json(['data' => $data], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param SupplierRequest $request
+     * @param string $id
+     * @return AccountResource
+     */
+    public function update(SupplierRequest $request, $id)
+    {
+        $attributes = $request->all();
+        
+        $entity = $this->supplierRepository->find($id);
+        
+        if (!empty($attributes['address'])) {
+            if (!empty(config('address.google_maps_key'))) {
+                $address = $this->addressRepository->find($attributes['address']['address_id']);
+                $geocode = Address::geocoding($address, $attributes['address']);
+                if (!empty($geocode)) {
+                    array_merge($attributes['address'], $geocode);
+                }
+            }
+
+            $entity->addresses()->sync([$attributes['address']['address_id'] => $attributes['address']]);
+        }
+
+        $entity->update($attributes);
+        
+        return SupplierResource::make($entity);
+    }
+}
+```
+
+Request body example
+
+```json
+{
+  "name": "Name of supplier",
+  "email": "email@domain.com",
+  "document": "11111111111",
+  "is_active": true,
+  "address": {
+  	"address_id": "0fdecea5-9f99-47ea-87a9-3dc191839008",
+  	"number": 16,
+  	"complement": "House"
+  }
+}
+```
+
 ## Creating your custom adapter
 
 You can create your own custom adapter to query an API that is not in the list, you may generate an 
