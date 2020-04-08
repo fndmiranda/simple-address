@@ -17,7 +17,7 @@ class AddressResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'postcode' => $this->postcode,
+            'postcode' => str_pad($this->postcode, 8, '0', STR_PAD_LEFT),
             'neighborhood_id' => $this->neighborhood_id,
             'neighborhood' => NeighborhoodResource::make($this->whenLoaded('neighborhood')),
             'created_at' => $this->created_at->toIso8601String(),
@@ -28,6 +28,7 @@ class AddressResource extends JsonResource
                     'complement' => $this->pivot->complement,
                     'lat' => $this->pivot->lat,
                     'lng' => $this->pivot->lng,
+                    'type' => $this->pivot->type,
                     'created_at' => $this->pivot->created_at->toIso8601String(),
                     'updated_at' => $this->pivot->updated_at->toIso8601String(),
                 ];
